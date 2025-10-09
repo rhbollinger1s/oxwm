@@ -83,7 +83,7 @@ const DMENU_CMD: &[&str] = &["sh", "-c", "dmenu_run -l 10"];
 // ========================================
 pub const TAG_COUNT: usize = 9;
 pub const TAGS: [&str; TAG_COUNT] = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
-//pub const TAGS: [&str; TAG_COUNT] = ["", "󰊯", "", "", "󰙯", "󱇤", "", "󱘶", "󰧮"];
+// pub const TAGS: [&str; TAG_COUNT] = ["", "󰊯", "", "", "󰙯", "󱇤", "", "󱘶", "󰧮"];
 // pub const TAGS: [&str; TAG_COUNT] = [
 //     "DEV", "WWW", "SYS", "DOC", "VBOX", "CHAT", "MUS", "VID", "MISC",
 // ];
@@ -93,18 +93,18 @@ pub const TAGS: [&str; TAG_COUNT] = ["1", "2", "3", "4", "5", "6", "7", "8", "9"
 // ========================================
 #[rustfmt::skip]
 pub const KEYBINDINGS: &[Key] = &[
-    Key::new(&[MODKEY],        keycodes::RETURN, KeyAction::Spawn,      Arg::Str(TERMINAL)),
-    Key::new(&[MODKEY],        keycodes::F,      KeyAction::Spawn,      Arg::Str(XCLOCK)),
+    Key::new(&[MODKEY],        keycodes::RETURN, KeyAction::Spawn,            Arg::Str(TERMINAL)),
+    Key::new(&[MODKEY],        keycodes::F,      KeyAction::Spawn,            Arg::Str(XCLOCK)),
+    Key::new(&[MODKEY],        keycodes::Q,      KeyAction::KillClient,       Arg::None),
 
-    Key::new(&[MODKEY],        keycodes::S,      KeyAction::Spawn,      Arg::Array(SCREENSHOT_CMD)),
-    Key::new(&[MODKEY],        keycodes::D,      KeyAction::Spawn,      Arg::Array(DMENU_CMD)),
-    Key::new(&[MODKEY],        keycodes::Q,      KeyAction::KillClient, Arg::None),
+    Key::new(&[MODKEY],        keycodes::S,      KeyAction::Spawn,            Arg::Array(SCREENSHOT_CMD)),
+    Key::new(&[MODKEY],        keycodes::D,      KeyAction::Spawn,            Arg::Array(DMENU_CMD)),
     Key::new(&[MODKEY, SHIFT], keycodes::F,      KeyAction::ToggleFullScreen, Arg::None),
-    Key::new(&[MODKEY],        keycodes::A,      KeyAction::ToggleGaps, Arg::None),
-    Key::new(&[MODKEY, SHIFT], keycodes::Q,      KeyAction::Quit,       Arg::None),
-    Key::new(&[MODKEY, SHIFT], keycodes::R,      KeyAction::Restart,    Arg::None),
-    Key::new(&[MODKEY],        keycodes::J,      KeyAction::FocusStack, Arg::Int(-1)),
-    Key::new(&[MODKEY],        keycodes::K,      KeyAction::FocusStack, Arg::Int(1)),
+    Key::new(&[MODKEY],        keycodes::A,      KeyAction::ToggleGaps,       Arg::None),
+    Key::new(&[MODKEY, SHIFT], keycodes::Q,      KeyAction::Quit,             Arg::None),
+    Key::new(&[MODKEY, SHIFT], keycodes::R,      KeyAction::Restart,          Arg::None),
+    Key::new(&[MODKEY],        keycodes::J,      KeyAction::FocusStack,       Arg::Int(-1)),
+    Key::new(&[MODKEY],        keycodes::K,      KeyAction::FocusStack,       Arg::Int(1)),
     
     Key::new(&[MODKEY], keycodes::KEY_1, KeyAction::ViewTag, Arg::Int(0)),
     Key::new(&[MODKEY], keycodes::KEY_2, KeyAction::ViewTag, Arg::Int(1)),
