@@ -1,3 +1,4 @@
+include!(env!("OXWM_CONFIG_PATH"));
 use crate::bar::{BlockCommand, BlockConfig};
 use crate::keyboard::handlers::Key;
 use crate::keyboard::{Arg, KeyAction, keycodes};

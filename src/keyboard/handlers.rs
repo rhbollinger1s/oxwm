@@ -10,6 +10,7 @@ pub enum KeyAction {
     FocusStack,
     Quit,
     Restart,
+    Recompile,
     ViewTag,
     ToggleGaps,
     MoveToTag,

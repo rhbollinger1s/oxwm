@@ -7,6 +7,7 @@ use crate::keyboard::{self, Arg, KeyAction};
 use crate::layout::GapConfig;
 use crate::layout::Layout;
 use crate::layout::tiling::TilingLayout;
+use crate::recompile::{CompileResult, Recompiler};
 use anyhow::Result;
 
 use x11rb::connection::Connection;
@@ -31,6 +32,7 @@ pub struct WindowManager {
     selected_tags: TagMask,
     gaps_enabled: bool,
     bar: Bar,
+    recompiler: Recompiler,
 }
 
 impl WindowManager {
@@ -52,6 +54,7 @@ impl WindowManager {
             .check()?;
 
         let bar = Bar::new(&connection, &screen, screen_number)?;
+        let recompiler = Recompiler::new()?;
 
         let selected_tags = Self::get_saved_selected_tags(&connection, root)?;
         let gaps_enabled = GAPS_ENABLED;
@@ -68,6 +71,7 @@ impl WindowManager {
             selected_tags,
             gaps_enabled,
             bar,
+            recompiler,
         };
 
         window_manger.scan_existing_windows()?;
@@ -290,7 +294,7 @@ impl WindowManager {
         Ok(())
     }
 
-    fn handle_key_action(&mut self, action: KeyAction, arg: &Arg) -> Result<()> {
+    fn handle_key_action(&mut self, action: KeyAction, arg: &Arg) -> Result<Option<bool>> {
         match action {
             KeyAction::Spawn => match arg {
                 Arg::Str(command) => {
@@ -321,7 +325,7 @@ impl WindowManager {
                 }
             }
             KeyAction::Quit | KeyAction::Restart => {
-                //no-op
+                // Handled in handle_event
             }
             KeyAction::ViewTag => {
                 if let Arg::Int(tag_index) = arg {
@@ -337,11 +341,22 @@ impl WindowManager {
                 self.gaps_enabled = !self.gaps_enabled;
                 self.apply_layout()?;
             }
+            KeyAction::Recompile => match self.recompiler.recompile()? {
+                CompileResult::Success => {
+                    println!("✓ Recompilation successful! Restarting...");
+                    return Ok(Some(true));
+                }
+                CompileResult::Error(_) => {}
+                CompileResult::NoConfig => {
+                    eprintln!("No config file found at ~/.config/oxwm/config.rs");
+                    eprintln!("Run 'oxwm init' to create one");
+                }
+            },
             KeyAction::None => {
-                //no-op
+                // no-op
             }
         }
-        Ok(())
+        Ok(None)
     }
 
     fn is_window_visible(&self, window: Window) -> bool {
@@ -549,7 +564,14 @@ impl WindowManager {
                 match action {
                     KeyAction::Quit => return Ok(Some(false)),
                     KeyAction::Restart => return Ok(Some(true)),
-                    _ => self.handle_key_action(action, arg)?,
+                    KeyAction::Recompile => {
+                        if let Some(should_restart) = self.handle_key_action(action, arg)? {
+                            return Ok(Some(should_restart));
+                        }
+                    }
+                    _ => {
+                        self.handle_key_action(action, arg)?;
+                    }
                 }
             }
             Event::ButtonPress(event) => {
