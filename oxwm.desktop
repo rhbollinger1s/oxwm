@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=oxwm
-Comment=DWM but better with sane defaults
+Comment=DWM-like WM with sain defualts
 Exec=oxwm
 Type=Application
 Keywords=wm;windowmanager;window;manager;
