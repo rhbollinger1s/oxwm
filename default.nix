@@ -8,7 +8,7 @@
 }:
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "oxwm";
-  version = "0.3.0";
+  version = "0.4.0";
 
   src = ./.;
 
@@ -30,6 +30,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   postInstall = ''
     install oxwm.desktop -Dt $out/share/xsessions
+    install -Dm644 oxwm.1 -t $out/share/man/man1
   '';
 
   passthru.providedSessions = ["oxwm"];
